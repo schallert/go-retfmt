@@ -11,7 +11,6 @@ func setup() {
 	rootDir = "."
 	badFiles = []string{}
 	ret = 0
-	extension = ".go_test"
 }
 
 func TestFunc(t *testing.T) {
@@ -27,8 +26,8 @@ func TestFunc(t *testing.T) {
 		t.Errorf("Error: len(badFiles) should be 2 but is %d\n", len(badFiles))
 	}
 
-	if !reflect.DeepEqual(badFiles, []string{"test/bad1.go_test", "test/bad2.go_test"}) {
-		t.Error("Error: badfiles should be [test/bad1.go_test, test/bad2.go_test] but is ", badFiles)
+	if !reflect.DeepEqual(badFiles, []string{"test/bad1.go", "test/bad2.go"}) {
+		t.Error("Error: badfiles should be [test/bad1.go, test/bad2.go] but is ", badFiles)
 	}
 }
 
