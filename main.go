@@ -28,7 +28,9 @@ var (
 // Exit with status 2 if incorrectly formatted files were detected
 func main() {
 	flag.StringVar(&rootDir, "dir", ".", "Directory to search")
-	flag.StringVar(&ignoreStr, "ignore", "", "Comma-separated directories to ignore (useful for vendored deps)")
+	flag.StringVar(&ignoreStr, "ignore", "",
+		"Comma-separated directories to ignore (useful for vendored deps)"+
+			" (default \"\")")
 	flag.Parse()
 
 	ignoreMap = ignoreStrToMap(ignoreStr)
