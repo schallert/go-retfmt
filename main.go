@@ -8,17 +8,23 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var (
-	rootDir  string
-	badFiles []string
-	ret      int
+	rootDir   string
+	ignoreStr string
+	ignoreMap map[string]bool
+	badFiles  []string
+	ret       int
 )
 
 func main() {
 	flag.StringVar(&rootDir, "d", ".", "Directory to search")
+	flag.StringVar(&ignoreStr, "i", "", "Comma-separated directories to ignore (useful for vendored deps)")
 	flag.Parse()
+
+	ignoreMap = ignoreStrToMap(ignoreStr)
 
 	err := filepath.Walk(rootDir, fileCheck)
 	if err != nil {
@@ -48,6 +54,13 @@ func fileCheck(path string, info os.FileInfo, err error) error {
 	}
 
 	if info.IsDir() {
+		if _, ok := ignoreMap[path]; ok {
+			fmt.Printf("Skipping directory: %s\n", path)
+
+			// Will direct filepath.Walk to not recurse down into directory
+			return filepath.SkipDir
+		}
+
 		return nil
 	}
 
@@ -69,4 +82,17 @@ func fileCheck(path string, info os.FileInfo, err error) error {
 	}
 
 	return nil
+}
+
+// Take in a comma-separated string of directories to skip, return a map
+// map from names to bool for easy lookup
+func ignoreStrToMap(s string) map[string]bool {
+	m := map[string]bool{}
+	for _, dir := range strings.Split(s, ",") {
+		if dir != "" {
+			// Clean up trailing slashes if present
+			m[filepath.Clean(dir)] = true
+		}
+	}
+	return m
 }
