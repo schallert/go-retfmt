@@ -2,6 +2,6 @@ package foobar
 
 
 
-func foo()    err {
+func foo()    error {
         return nil
 }

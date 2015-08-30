@@ -17,6 +17,10 @@ var (
 	ignoreMap map[string]bool
 	badFiles  []string
 	ret       int
+
+	// Specify extension so we can override it in tests (don't want test
+	// files to be named *.go, since `go build` would try to build them)
+	extension string = ".go"
 )
 
 // Perform checks according to command line flags
@@ -67,7 +71,7 @@ func fileCheck(path string, info os.FileInfo, err error) error {
 		return nil
 	}
 
-	if filepath.Ext(path) == ".go" {
+	if filepath.Ext(path) == extension {
 		content, err := ioutil.ReadFile(path)
 		if err != nil {
 			return err

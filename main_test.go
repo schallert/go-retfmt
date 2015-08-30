@@ -7,9 +7,15 @@ import (
 	"testing"
 )
 
-func TestFunc(t *testing.T) {
+func setup() {
 	rootDir = "."
 	badFiles = []string{}
+	ret = 0
+	extension = ".go_test"
+}
+
+func TestFunc(t *testing.T) {
+	setup()
 
 	err := filepath.Walk(rootDir, fileCheck)
 	if err != nil {
@@ -21,14 +27,13 @@ func TestFunc(t *testing.T) {
 		t.Errorf("Error: len(badFiles) should be 2 but is %d\n", len(badFiles))
 	}
 
-	if !reflect.DeepEqual(badFiles, []string{"test/bad1.go", "test/bad2.go"}) {
-		t.Error("Error: badfiles should be [test/bad1.go, test/bad2.go] but is ", badFiles)
+	if !reflect.DeepEqual(badFiles, []string{"test/bad1.go_test", "test/bad2.go_test"}) {
+		t.Error("Error: badfiles should be [test/bad1.go_test, test/bad2.go_test] but is ", badFiles)
 	}
 }
 
 func TestRetVal(t *testing.T) {
-	rootDir = "."
-	badFiles = []string{}
+	setup()
 
 	err := filepath.Walk(rootDir, fileCheck)
 	if err != nil {
@@ -83,11 +88,9 @@ func TestIgnoreStrToMap(t *testing.T) {
 }
 
 func TestIgnoreWalk(t *testing.T) {
-	rootDir = "."
-	badFiles = []string{}
+	setup()
 	ignoreStr = "test/"
 	ignoreMap = ignoreStrToMap(ignoreStr)
-	ret = 0
 
 	err := filepath.Walk(rootDir, fileCheck)
 	if err != nil {
